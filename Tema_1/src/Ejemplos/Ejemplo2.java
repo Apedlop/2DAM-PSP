@@ -7,7 +7,8 @@ public class Ejemplo2 {
 
     public static void main(String[] args) throws IOException {
 
-        Process p = new ProcessBuilder("bash", "-c", "ls").start();
+//        Process p = new ProcessBuilder("bash", "-c", "ls").start(); // Ubuntu
+        Process p = new ProcessBuilder("cmd", "ver", "dir").start(); // Windows
 
         try (InputStream is = p.getInputStream()) {
             int c;

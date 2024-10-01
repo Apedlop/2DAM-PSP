@@ -9,10 +9,12 @@ public class Ejemplo3 {
     public static void main(String[] args) throws IOException {
 
         // Cambiamos el formato del directorio para que sea compatible
-        File directorio = new File("/home/usuario/Documentos/2DAM-PSP/Tema_1/out/production/Tema_1");  // Usamos "/" en lugar de "\\"
+//        File directorio = new File("/home/usuario/Documentos/2DAM-PSP/Tema_1/out/production/Tema_1");  // Ubuntu
+        File directorio = new File("C:\\Users\\pedre\\OneDrive\\Documentos\\2DAM-PSP\\Tema_1\\out\\production\\Tema_1"); // Windows
 
         // Configuramos el ProcessBuilder para ejecutar Ejemplo2
-        ProcessBuilder pb = new ProcessBuilder("java", "Ejemplos.Ejemplo2");
+//        ProcessBuilder pb = new ProcessBuilder("java", "Ejemplos.Ejemplo2"); // Ubuntu
+        ProcessBuilder pb = new ProcessBuilder("C:\\Users\\pedre\\.jdks\\openjdk-23\\bin\\java.exe", "Ejemplos.NoExist"); // Windows
 
         // Establecemos el directorio de trabajo
         pb.directory(directorio);
