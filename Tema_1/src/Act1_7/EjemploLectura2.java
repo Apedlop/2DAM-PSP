@@ -8,15 +8,19 @@ public class EjemploLectura2 {
     public static void main(String[] args) throws IOException {
 
         // Directorio donde está el archivo .class de EjemploLectura
-        File directorio = new File("C:\\Users\\pedre\\OneDrive\\Documentos\\2DAM-PSP\\Tema_1\\out\\production\\Tema_1");
+//        File directorio = new File("C:\\Users\\pedre\\OneDrive\\Documentos\\2DAM-PSP\\Tema_1\\out\\production\\Tema_1"); // Windows
+        File directorio = new File("/home/usuario/Documentos/2DAM-PSP/Tema_1/out/production/Tema_1");
 
         // Archivo de entrada (de donde tomará los datos de entrada)
-        File archivoEntrada = new File("C:\\Users\\pedre\\OneDrive\\Documentos\\2DAM-PSP\\Tema_1\\Ficheros\\Act1_7\\Entrada.txt");
+//        File archivoEntrada = new File("C:\\Users\\pedre\\OneDrive\\Documentos\\2DAM-PSP\\Tema_1\\Ficheros\\Act1_7\\Entrada.txt"); // Windows
+        File archivoEntrada = new File("/home/usuario/Documentos/2DAM-PSP/Tema_1/Ficheros/Act1_7/Entrada.txt");
 
         // Archivo de salida (donde se guardará la salida estándar)
-        File archivoSalida = new File("C:\\Users\\pedre\\OneDrive\\Documentos\\2DAM-PSP\\Tema_1\\Ficheros\\Act1_7\\Salida.txt");
+//        File archivoSalida = new File("C:\\Users\\pedre\\OneDrive\\Documentos\\2DAM-PSP\\Tema_1\\Ficheros\\Act1_7\\Salida.txt"); // Windows
+        File archivoSalida = new File("/home/usuario/Documentos/2DAM-PSP/Tema_1/Ficheros/Act1_7/Salida.txt");
 
-        ProcessBuilder pb = new ProcessBuilder("C:\\Users\\pedre\\.jdks\\openjdk-23\\bin\\java.exe", "Act1_8.EjemploLectura");
+//        ProcessBuilder pb = new ProcessBuilder("C:\\Users\\pedre\\.jdks\\openjdk-23\\bin\\java.exe", "Act1_8.EjemploLectura"); // Windows
+        ProcessBuilder pb = new ProcessBuilder("java", "Act1_7.EjemploLectura");
 
         // Establecemos el directorio donde ejecutar el proceso
         pb.directory(directorio);

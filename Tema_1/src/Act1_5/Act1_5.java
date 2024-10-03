@@ -1,10 +1,8 @@
-package Ejemplos;
+package Act1_5;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
-public class Ejemplo3 {
+public class Act1_5 {
 
     public static void main(String[] args) throws IOException {
 
@@ -12,7 +10,7 @@ public class Ejemplo3 {
         File directorio = new File("/home/usuario/Documentos/2DAM-PSP/Tema_1/out/production/Tema_1");  // Usamos "/" en lugar de "\\"
 
         // Configuramos el ProcessBuilder para ejecutar Ejemplo2
-        ProcessBuilder pb = new ProcessBuilder("java", "Ejemplos.Ejemplo2");
+        ProcessBuilder pb = new ProcessBuilder("java", "Ejemplos.ProgNoExis");
 
         // Establecemos el directorio de trabajo
         pb.directory(directorio);
@@ -32,5 +30,23 @@ public class Ejemplo3 {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // MUESTRA ERROR
+        try {
+            InputStream er = p.getErrorStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(er));
+            String liner = null;
+            while ((liner = br.readLine()) != null) {
+                System.out.println(liner);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /*El error que nos muesta nos  indica que la clase Ejemplos.ProgNoExis no existe en el sistema o no es accesible
+         la ruta donde Java está buscando, lo que impide que el programa se ejecute correctamente.*/
+
     }
+
 }

@@ -1,2 +1,2 @@
 Introduce una cadena...
-Cadena escrita: Hola José
+Cadena escrita: Hola JosÃ©
