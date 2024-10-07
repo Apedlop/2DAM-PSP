@@ -2,7 +2,7 @@ package Act1_6;
 
 import java.io.*;
 
-public class SumNums2 {
+public class Main {
 
     public static void main(String[] args) throws IOException {
 
