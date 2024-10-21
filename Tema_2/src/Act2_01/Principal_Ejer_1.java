@@ -4,9 +4,8 @@ public class Principal_Ejer_1 {
 
     public static void main(String[] args) {
 
-        /* Al haber más hilos (5), por lo que la planificación de la CPU los ejecuta de
-        manera concurrente y en orden impredecible, ya que los hilos se ejecutan independientemente
-        unos de otros.*/
+        /* Al haber más hilos (5) la planificación de la CPU los ejecuta de manera concurrente y en orden impredecible,
+        ya que los hilos se ejecutan independientemente unos de otros.*/
         Ejer_1 holaMundo = new Ejer_1("Hola Mundo");
         holaMundo.start();
 
