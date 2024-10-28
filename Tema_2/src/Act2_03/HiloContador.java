@@ -1,16 +1,16 @@
 package Act2_03;
 
-import java.applet.Applet;
+import javax.swing.*;
 
 public class HiloContador extends Thread {
     private long contador;
     private boolean parar;
-    private Applet applet; // Referencia a la applet
+    private Principal app; // Referencia a la ventana principal
 
-    public HiloContador(long contadorInicial, Applet applet) {
+    public HiloContador(long contadorInicial, Principal app) {
         this.contador = contadorInicial;
         this.parar = false;
-        this.applet = applet; // Guardar la referencia
+        this.app = app; // Guardar la referencia
     }
 
     public void detenerHilo() {
@@ -25,7 +25,9 @@ public class HiloContador extends Thread {
                 e.printStackTrace();
             }
             contador++; // Incrementar el contador
-            applet.repaint(); // Solicitar un redibujo desde el hilo
+
+            // Solicitar un redibujo desde el hilo
+            SwingUtilities.invokeLater(() -> app.repaint());
         }
     }
 
