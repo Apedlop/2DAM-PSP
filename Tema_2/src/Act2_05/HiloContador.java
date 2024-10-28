@@ -1,36 +1,31 @@
 package Act2_05;
 
-import java.applet.Applet;
+import javax.swing.*;
 
 public class HiloContador extends Thread {
     private long contador;
-    private boolean parar; // Bandera para detener el hilo
-    private Applet applet; // Referencia a la applet
+    private Principal app; // Referencia a la ventana principal
 
-    public HiloContador(long contadorInicial, Applet applet) {
+    public HiloContador(long contadorInicial, Principal app) {
         this.contador = contadorInicial;
-        this.parar = false;
-        this.applet = applet; // Guardar la referencia
+        this.app = app; // Guardar la referencia
     }
 
     public void detenerHilo() {
-        parar = true; // Cambiar bandera para detener el hilo
         interrupt(); // Interrumpir el hilo si está en espera
     }
 
-    @Override
     public void run() {
-        try {
-            while (!parar) { // Bucle controlado por la bandera
-                System.out.println("Contador: " + contador);
-                contador++;
-                applet.repaint(); // Actualizar el Applet para mostrar el contador
-                Thread.sleep(1000); // Pausar para ver el incremento
+        while (true) { // Bucle infinito
+            try {
+                Thread.sleep(300); // Pausa de 300ms entre incrementos
+            } catch (InterruptedException e) {
+                // Si se interrumpe, salimos del bucle y finalizamos el hilo
+                return; // Finaliza el hilo
             }
-        } catch (InterruptedException e) {
-            System.out.println("Hilo interrumpido.");
+            contador++; // Incrementar el contador
+            app.repaint(); // Solicitar un redibujo desde el hilo
         }
-        System.out.println("FIN HILO");
     }
 
     public long getContador() {

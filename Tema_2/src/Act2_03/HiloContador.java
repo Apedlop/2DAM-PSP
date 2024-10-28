@@ -25,9 +25,7 @@ public class HiloContador extends Thread {
                 e.printStackTrace();
             }
             contador++; // Incrementar el contador
-
-            // Solicitar un redibujo desde el hilo
-            SwingUtilities.invokeLater(() -> app.repaint());
+            app.repaint(); // Solicitar un redibujo desde el hilo
         }
     }
 
