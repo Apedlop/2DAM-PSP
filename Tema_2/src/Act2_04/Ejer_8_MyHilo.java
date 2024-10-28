@@ -10,22 +10,14 @@ public class Ejer_8_MyHilo extends Thread {
         this.app = app; // Inicializa la referencia a la ventana principal
     }
 
-    // Método para suspender el hilo
     public void suspende() {
-        suspender.set(true); // Solicitar suspensión
+        suspender.set(true);
     }
 
-    // Método para reanudar el hilo
     public void reanuda() {
-        suspender.set(false); // Solicitar reanudación
+        suspender.set(false);
     }
 
-    // Método para verificar si el hilo está suspendido
-    public boolean isSuspended() {
-        return suspender.get(); // Verificar el estado de suspensión
-    }
-
-    // Método para obtener el valor del contador
     public long getContador() {
         return contador;
     }
@@ -35,15 +27,11 @@ public class Ejer_8_MyHilo extends Thread {
         try {
             while (enEjecucion) {
                 suspender.esperandoParaReanudar(); // Comprobar si debe suspenderse
+                contador++; // Incrementa el contador
+                System.out.println("Contador: " + contador); // Muestra el valor del contador
 
-                // Solo incrementa el contador si el hilo no está suspendido
-                if (!isSuspended()) {
-                    contador++; // Incrementa el contador
-                    System.out.println("Contador: " + contador); // Muestra el valor del contador
-
-                    // Actualiza el contador en la interfaz gráfica
-                    app.actualizarContador(this);
-                }
+                // Actualiza el contador en la interfaz gráfica
+                app.actualizarContador(this);
 
                 Thread.sleep(1000); // Pausa para ver el incremento
             }
@@ -53,7 +41,6 @@ public class Ejer_8_MyHilo extends Thread {
         }
     }
 
-    // Método para finalizar el hilo
     public void finalizar() {
         enEjecucion = false; // Finaliza el bucle
     }
