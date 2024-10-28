@@ -15,4 +15,7 @@ public class SolicitaSuspender {
         }
     }
 
+    public boolean get() {
+        return false;
+    }
 }
