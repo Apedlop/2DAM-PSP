@@ -43,15 +43,6 @@ public class Ejer_8 extends JFrame implements ActionListener {
         suspender2.addActionListener(this);
         add(suspender2);
 
-        // Etiquetas de "HILO 1" y "HILO 2" debajo de los botones
-        hiloLabel1 = new JLabel("HILO 1", JLabel.CENTER);
-        hiloLabel1.setBounds(50, 150, 100, 30);
-        add(hiloLabel1);
-
-        hiloLabel2 = new JLabel("HILO 2", JLabel.CENTER);
-        hiloLabel2.setBounds(250, 150, 100, 30);
-        add(hiloLabel2);
-
         // Etiquetas de contadores y estados para cada hilo
         contadorLabel1 = new JLabel("0", JLabel.CENTER);
         contadorLabel1.setFont(new Font("Arial", Font.BOLD, 16));
@@ -63,12 +54,12 @@ public class Ejer_8 extends JFrame implements ActionListener {
         contadorLabel2.setBounds(250, 180, 100, 30);
         add(contadorLabel2);
 
-        estadoLabel1 = new JLabel("", JLabel.CENTER);
+        estadoLabel1 = new JLabel("Hilo1", JLabel.CENTER);
         estadoLabel1.setBounds(50, 210, 100, 30);
         add(estadoLabel1);
 
-        estadoLabel2 = new JLabel("", JLabel.CENTER);
-        estadoLabel2.setBounds(250, 210, 100, 30);
+        estadoLabel2 = new JLabel("Hilo2", JLabel.CENTER);
+        estadoLabel2.setBounds(240, 210, 110, 30);
         add(estadoLabel2);
 
         // Botón de "Finalizar Proceso" en la parte inferior
@@ -94,26 +85,26 @@ public class Ejer_8 extends JFrame implements ActionListener {
             comenzar.setEnabled(false);
             hilo1.start();
             hilo2.start();
-            estadoLabel1.setText("Corriendo");
-            estadoLabel2.setText("Corriendo");
+            estadoLabel1.setText("Hilo 1 Corriendo");
+            estadoLabel2.setText("Hilo 2 Corriendo");
         } else if (e.getSource() == reanudar1) {
             hilo1.reanuda();
-            estadoLabel1.setText("Corriendo");
+            estadoLabel1.setText("Hilo 1 Corriendo");
         } else if (e.getSource() == reanudar2) {
             hilo2.reanuda();
-            estadoLabel2.setText("Corriendo");
+            estadoLabel2.setText("Hilo 2 Corriendo");
         } else if (e.getSource() == suspender1) {
             hilo1.suspende();
-            estadoLabel1.setText("Suspendido");
+            estadoLabel1.setText("Hilo 1 Suspendido");
         } else if (e.getSource() == suspender2) {
             hilo2.suspende();
-            estadoLabel2.setText("Suspendido");
+            estadoLabel2.setText("Hilo 2 Suspendido");
         } else if (e.getSource() == finalizar) {
             hilo1.finalizar();
             hilo2.finalizar();
             finalizar.setEnabled(false);
-            estadoLabel1.setText("Finalizado");
-            estadoLabel2.setText("Finalizado");
+            estadoLabel1.setText("Hilo 1 Finalizado");
+            estadoLabel2.setText("Hilo 2 Finalizado");
         }
         repaint();
     }
