@@ -82,7 +82,7 @@ public class Ejer_8 extends JFrame implements ActionListener {
         if (e.getSource() == comenzar) {
             hilo1 = new Ejer_8_MyHilo(this);
             hilo2 = new Ejer_8_MyHilo(this);
-            comenzar.setEnabled(false);
+            comenzar.setEnabled(false); // Una vez pulsado se desabilia el botón
             hilo1.start();
             hilo2.start();
             estadoLabel1.setText("Hilo 1 Corriendo");

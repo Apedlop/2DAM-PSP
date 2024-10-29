@@ -1,5 +1,7 @@
 package Act2_05;
 
+import Act2_01.Hilo;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,7 +9,7 @@ import java.awt.event.ActionListener;
 
 public class Ejer_9 extends JFrame implements ActionListener {
 
-    HiloContador hilo1, hilo2;
+    Ejer_9_HiloContador hilo1, hilo2;
     private JButton comenzar, interrumpir1, interrumpir2, finalizar;
     private JLabel contador1, contador2, estado1, estado2;
 
@@ -47,15 +49,56 @@ public class Ejer_9 extends JFrame implements ActionListener {
 
         // Etiquetas de estados para cada hilo
         estado1 = new JLabel("Hilo 1", JLabel.CENTER);
-        estado1.setBounds(50, 210, 100, 30);
+        estado1.setBounds(50, 180, 110, 30);
+        add(estado1);
 
+        estado2 = new JLabel("Hilo 2", JLabel.CENTER);
+        estado2.setBounds(240, 180, 110, 30);
+        add(estado2);
 
-
+        // Botón "Finalizar Proceso" en la parte inferior
+        finalizar = new JButton("Finalizar Proceso");
+        finalizar.setBounds(120, 250, 150, 30);
+        finalizar.addActionListener(this);
+        add(finalizar);
     }
 
+    public void actualizarContador(Ejer_9_HiloContador hilo) {
+        if (hilo == hilo1) {
+            contador1.setText(String.valueOf(hilo.getContador()));
+        } else if (hilo == hilo2) {
+            contador2.setText(String.valueOf(hilo.getContador()));
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == comenzar) {
+            hilo1 = new Ejer_9_HiloContador(300, this);
+            hilo2 = new Ejer_9_HiloContador(1000, this);
+            comenzar.setEnabled(false); // Una vez pulsado se desabilia el botón
+            hilo1.start();
+            hilo2.start();
+            estado1.setText("Hilo 1 Corriendo");
+            estado2.setText("Hilo 2 Corriendo");
+        } else if (e.getSource() == interrumpir1) {
+            hilo1.detenerHilo();
+            estado1.setText("Hilo 1 Interrumpido");
+        } else if (e.getSource() == interrumpir2) {
+            hilo2.detenerHilo();
+            estado2.setText("Hilo 2 Interrumpido");
+        } else if (e.getSource() == finalizar) {
+            hilo1.finalizar();
+            hilo2.finalizar();
+            finalizar.setEnabled(false);
+            estado1.setText("Hilo 1 Finalizado");
+            estado2.setText("Hilo 2 Finalizado");
+        }
+        repaint();
+    }
 
+    public static void main(String[] args) {
+        Ejer_9 app = new Ejer_9();
+        app.setVisible(true);
     }
 }
