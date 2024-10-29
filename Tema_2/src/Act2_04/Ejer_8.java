@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 public class Ejer_8 extends JFrame implements ActionListener {
     Ejer_8_MyHilo hilo1, hilo2;
     private JButton comenzar, reanudar1, reanudar2, suspender1, suspender2, finalizar;
-    private JLabel contadorLabel1, contadorLabel2, hiloLabel1, hiloLabel2, estadoLabel1, estadoLabel2;
+    private JLabel contadorLabel1, contadorLabel2, estadoLabel1, estadoLabel2;
 
     public Ejer_8() {
         setTitle("EJECUTAR, SUSPENDER Y REANUDAR HILOS");
