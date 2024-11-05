@@ -1,6 +1,7 @@
 package Act2_06;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -24,7 +25,22 @@ public class Ejer_6 extends JFrame implements ActionListener {
         comenzarCarrera.addActionListener(this);
         add(comenzarCarrera);
 
-        // 
+        // HILO 1
+        h1 = new JLabel("Hilo 1", JLabel.CENTER);
+        h1.setFont(new Font("Arial", Font.BOLD, 20));
+        h1.setBounds(25, 100, 75, 30);
+        add(h1);
+
+        slider1 = new JSlider(JSlider.HORIZONTAL, 0, 10, 5);
+        slider1.setBounds(150, 105, 200, 50);
+        // Configuración de las marcas del slider
+        slider1.setMajorTickSpacing(5); // Espaciado entre marcas principales
+        slider1.setMinorTickSpacing(1); // ESpacios entre las marcas secundarias
+        slider1.setPaintTicks(true); // Habilita el dibujo de las marcas
+        slider1.setPaintLabels(true); // Habilita el dibujo de las etiquetas
+        add(slider1);
+
+        pro
 
     }
 
@@ -32,4 +48,10 @@ public class Ejer_6 extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
     }
+
+    public static void main(String[] args) {
+        Ejer_6 app = new Ejer_6();
+        app.setVisible(true);
+    }
+
 }
