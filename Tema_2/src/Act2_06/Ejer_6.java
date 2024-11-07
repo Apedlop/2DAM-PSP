@@ -26,13 +26,13 @@ public class Ejer_6 extends JFrame implements ActionListener {
         add(comenzarCarrera);
 
         // HILO 1
-        h1 = new JLabel("Hilo 1", JLabel.CENTER);
+        h1 = new JLabel("Hilo 1", JLabel.LEFT);
         h1.setFont(new Font("Arial", Font.BOLD, 20));
         h1.setBounds(25, 100, 75, 30);
         add(h1);
 
         slider1 = new JSlider(JSlider.HORIZONTAL, 0, 10, 5);
-        slider1.setBounds(150, 105, 200, 50);
+        slider1.setBounds(150, 105, 200, 45);
         // Configuración de las marcas del slider
         slider1.setMajorTickSpacing(5); // Espaciado entre marcas principales
         slider1.setMinorTickSpacing(1); // ESpacios entre las marcas secundarias
@@ -40,13 +40,84 @@ public class Ejer_6 extends JFrame implements ActionListener {
         slider1.setPaintLabels(true); // Habilita el dibujo de las etiquetas
         add(slider1);
 
-        pro
+        prioridad1 = new JLabel("Prioridad", JLabel.RIGHT);
+        prioridad1.setFont(new Font("Arial", Font.PLAIN, 15));
+        prioridad1.setBounds(375, 100, 100, 30);
+        add(prioridad1);
+
+        progress1 = new JProgressBar();
+        progress1.setBounds(25, 150, 450, 20);
+        progress1.setStringPainted(true);
+        add(progress1);
+
+        // HILO 2
+        h2 = new JLabel("Hilo 2", JLabel.LEFT);
+        h2.setFont(new Font("Arial", Font.BOLD, 20));
+        h2.setBounds(25, 200, 75, 30);
+        add(h2);
+
+        slider2 = new JSlider(JSlider.HORIZONTAL, 0, 10, 5);
+        slider2.setBounds(150, 205, 200, 45);
+        // Configuración de las marcas del slider
+        slider2.setMajorTickSpacing(5); // Espaciado entre marcas principales
+        slider2.setMinorTickSpacing(1); // ESpacios entre las marcas secundarias
+        slider2.setPaintTicks(true); // Habilita el dibujo de las marcas
+        slider2.setPaintLabels(true); // Habilita el dibujo de las etiquetas
+        add(slider2);
+
+        prioridad2 = new JLabel("Prioridad", JLabel.RIGHT);
+        prioridad2.setFont(new Font("Arial", Font.PLAIN, 15));
+        prioridad2.setBounds(375, 200, 100, 30);
+        add(prioridad2);
+
+        progress2 = new JProgressBar();
+        progress2.setBounds(25, 250, 450, 20);
+        progress2.setStringPainted(true);
+        add(progress2);
+
+        // HILO 3
+        h3 = new JLabel("Hilo 3", JLabel.LEFT);
+        h3.setFont(new Font("Arial", Font.BOLD, 20));
+        h3.setBounds(25, 300, 75, 30);
+        add(h3);
+
+        slider3 = new JSlider(JSlider.HORIZONTAL, 0, 10, 5);
+        slider3.setBounds(150, 305, 200, 45);
+        // Configuración de las marcas del slider
+        slider3.setMajorTickSpacing(5); // Espaciado entre marcas principales
+        slider3.setMinorTickSpacing(1); // ESpacios entre las marcas secundarias
+        slider3.setPaintTicks(true); // Habilita el dibujo de las marcas
+        slider3.setPaintLabels(true); // Habilita el dibujo de las etiquetas
+        add(slider3);
+
+        prioridad3 = new JLabel("Prioridad", JLabel.RIGHT);
+        prioridad3.setFont(new Font("Arial", Font.PLAIN, 15));
+        prioridad3.setBounds(375, 300, 100, 30);
+        add(prioridad3);
+
+        progress3 = new JProgressBar();
+        progress3.setBounds(25, 350, 450, 20);
+        progress3.setStringPainted(true);
+        add(progress3);
+
+        // GANADOR
+        ganador = new JLabel("", JLabel.CENTER);
+        ganador.setFont(new Font("Arial", Font.BOLD, 25));
+        ganador.setBounds(100, 420, 300, 30);
+        add(ganador);
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        if (e.getSource() == comenzarCarrera) {
+            hilo1 = new Ejer_6_HiloContador();
+            hilo2 = new Ejer_6_HiloContador();
+            hilo3 = new Ejer_6_HiloContador();
+            prioridad1.setText("Prioridad: " + slider1.getValue());
+            prioridad2.setText("Prioridad: " + slider2.getValue());
+            prioridad3.setText("Prioridad: " + slider3.getValue());
+        }
     }
 
     public static void main(String[] args) {
