@@ -111,14 +111,80 @@ public class Ejer_6 extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == comenzarCarrera) {
-            hilo1 = new Ejer_6_HiloContador();
-            hilo2 = new Ejer_6_HiloContador();
-            hilo3 = new Ejer_6_HiloContador();
-            prioridad1.setText("Prioridad: " + slider1.getValue());
-            prioridad2.setText("Prioridad: " + slider2.getValue());
-            prioridad3.setText("Prioridad: " + slider3.getValue());
+            hilo1 = new Ejer_6_HiloContador(this);
+            hilo2 = new Ejer_6_HiloContador(this);
+            hilo3 = new Ejer_6_HiloContador(this);
+
+            // Asignamos las prioridades según los valores de los sliders
+            asignarPrioridades();
+
+            hilo1.start();
+            hilo2.start();
+            hilo3.start();
         }
     }
+
+    // Asigna la prioridad de los hilos según los sliders
+    private void asignarPrioridades() {
+        if (slider1.getValue() > slider2.getValue() && slider1.getValue() > slider3.getValue()) {
+            hilo1.setPriority(Thread.MAX_PRIORITY);
+            // Asignar prioridades normales y mínimas a los otros dos hilos
+            if (slider2.getValue() > slider3.getValue()) {
+                hilo2.setPriority(Thread.NORM_PRIORITY);
+                hilo3.setPriority(Thread.MIN_PRIORITY);
+            } else {
+                hilo2.setPriority(Thread.MIN_PRIORITY);
+                hilo3.setPriority(Thread.NORM_PRIORITY);
+            }
+        } else if (slider2.getValue() > slider1.getValue() && slider2.getValue() > slider3.getValue()) {
+            hilo2.setPriority(Thread.MAX_PRIORITY);
+            // Asignar prioridades normales y mínimas a los otros dos hilos
+            if (slider1.getValue() >= slider3.getValue()) {
+                hilo1.setPriority(Thread.NORM_PRIORITY);
+                hilo3.setPriority(Thread.MIN_PRIORITY);
+            } else {
+                hilo1.setPriority(Thread.MIN_PRIORITY);
+                hilo3.setPriority(Thread.NORM_PRIORITY);
+            }
+        } else if (slider3.getValue() > slider1.getValue() && slider3.getValue() > slider2.getValue()) {
+            hilo3.setPriority(Thread.MAX_PRIORITY);
+            // Asignar prioridades normales y mínimas a los otros dos hilos
+            if (slider1.getValue() > slider2.getValue()) {
+                hilo1.setPriority(Thread.NORM_PRIORITY);
+                hilo2.setPriority(Thread.MIN_PRIORITY);
+            } else {
+                hilo1.setPriority(Thread.MIN_PRIORITY);
+                hilo2.setPriority(Thread.NORM_PRIORITY);
+            }
+        } else {
+            hilo1.setPriority(Thread.NORM_PRIORITY);
+            hilo2.setPriority(Thread.NORM_PRIORITY);
+            hilo3.setPriority(Thread.NORM_PRIORITY);
+        }
+    }
+
+    // Actualiza las barras de progreso según el contador de cada hilo
+    public void actualizarProgressBar(Ejer_6_HiloContador hilo) {
+        if (hilo == hilo1) {
+            progress1.setValue(hilo.getContador());
+        } else if (hilo == hilo2) {
+            progress2.setValue(hilo.getContador());
+        } else if (hilo == hilo3) {
+            progress3.setValue(hilo.getContador());
+        }
+    }
+
+    // Muestra el ganador
+    public void mostrarGanador(Ejer_6_HiloContador hilo) {
+        if (hilo == hilo1) {
+            ganador.setText("¡Hilo 1 GANÓ!");
+        } else if (hilo == hilo2) {
+            ganador.setText("¡Hilo 2 GANÓ!");
+        } else if (hilo == hilo3) {
+            ganador.setText("¡Hilo 3 GANÓ!");
+        }
+    }
+
 
     public static void main(String[] args) {
         Ejer_6 app = new Ejer_6();
