@@ -1,4 +1,4 @@
-package Act2_07;
+package Act2_07.sincronizado;
 
 public class HiloB extends Thread {
 

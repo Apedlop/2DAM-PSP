@@ -2,23 +2,21 @@ package Act2_07;
 
 public class HiloC extends Thread {
 
-    private Contador contador;
 
-    public HiloC(String n, Contador contador) {
-        setName(n);
-        this.contador = contador;
+    private Contador cont;
+    private int iteracionesTotales;
+
+    public HiloC(String nombre, Contador cont, int iteracionesTotales) {
+        super(nombre);
+        this.cont = cont;
+        this.iteracionesTotales = iteracionesTotales;
     }
 
+    @Override
     public void run() {
-        for (int i = 0; i < 5000; i++) {
-            contador.incrementar();
-            try {
-                sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        while (cont.incrementarActual()) { // Cada hilo verifica si puede incrementar
+            cont.incrementar();
         }
-        System.out.println(getName() + " contador vale " + contador.valor());
     }
 
 }

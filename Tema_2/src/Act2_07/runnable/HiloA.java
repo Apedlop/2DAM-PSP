@@ -1,12 +1,11 @@
-package Act2_07;
+package Act2_07.runnable;
 
-public class HiloB extends Thread {
+public class HiloA implements Runnable {
 
     private Contador cont;
     private int iteracionesTotales;
 
-    public HiloB(String nombre, Contador cont, int iteracionesTotales) {
-        super(nombre);
+    public HiloA(String nombre, Contador cont, int iteracionesTotales) {
         this.cont = cont;
         this.iteracionesTotales = iteracionesTotales;
     }

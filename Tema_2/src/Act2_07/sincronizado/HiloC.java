@@ -1,11 +1,12 @@
-package Act2_07;
+package Act2_07.sincronizado;
 
-public class HiloB extends Thread {
+public class HiloC extends Thread {
+
 
     private Contador cont;
     private int iteracionesTotales;
 
-    public HiloB(String nombre, Contador cont, int iteracionesTotales) {
+    public HiloC(String nombre, Contador cont, int iteracionesTotales) {
         super(nombre);
         this.cont = cont;
         this.iteracionesTotales = iteracionesTotales;
@@ -17,4 +18,5 @@ public class HiloB extends Thread {
             cont.incrementar();
         }
     }
+
 }

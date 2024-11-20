@@ -1,4 +1,4 @@
-package Act2_07;
+package Act2_07.sincronizado;
 
 public class CompartirHilos {
 
@@ -20,7 +20,7 @@ public class CompartirHilos {
 
         try {
             /* Esperamos a que todos los hilos terminen su ejecución mediante el método join(), que asegura que el hilo principal (main)
-             * no continúe hasta que cada uno de estos hilos haya finalizado. */
+            * no continúe hasta que cada uno de estos hilos haya finalizado. */
             hiloA.join(); // Espera a que hiloA termine
             hiloB.join(); // Espera a que hiloB termine
             hiloC.join(); // Espera a que hiloC termine
@@ -31,15 +31,6 @@ public class CompartirHilos {
             e.printStackTrace();
         }
 
-        System.out.println("Resultado sin sincronización: " + cont.valor());
-
-        /* ¿Se optiene el resultado correcto?
-        *  Si no sincronizamos el contador el resultado simepre será o menor a 5000 o mayor. Sin embargo, si sincronizamos el contador
-        *  simepre nos saldrá el valor correcto.
-        *  Si hacemos la sincronización con Thread y con Runnable el valor siempre será correcto, lo que diferencia al Thread de la interfaz
-        *  Runnable es:
-        *  - Thread: Es útil para tareas simples cuano no necesitamos mucha flexibilidad o cuando necesitamos heredar de otra clase.
-        *  - Runnable: Es más adecuado para una solución flexible, sobre todo cuando trabajamos con varios hilos o cuando usamos codigos distintos
-        *   en hilos diferentes.  */
+        System.out.println("Resultado con sincronización: " + cont.valor());
     }
 }
