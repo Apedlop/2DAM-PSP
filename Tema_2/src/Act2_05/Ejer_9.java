@@ -1,7 +1,5 @@
 package Act2_05;
 
-import Act2_01.Hilo;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,7 +15,7 @@ public class Ejer_9 extends JFrame implements ActionListener {
         setTitle("EJECUTAR E INTERRUMPIR HILOS");
         setSize(400, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(null); // Utilizat layout nulo para posicionar manualmente los elementos
+        setLayout(null); // Utilizar layout nulo para posicionar manualmente los elementos
 
         // Botón de "Comenzar Proceso" en la parte superior
         comenzar = new JButton("Comenzar Proceso");
