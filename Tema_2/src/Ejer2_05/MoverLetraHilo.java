@@ -1,9 +1,9 @@
 package Ejer2_05;
 
-public class MoverLetraHilo implements Runnable {
+public class MoverLetraHilo extends Thread {
 
     private int x = 1; // Posición inicial en X
-    private int y = 100; // Posición fija en Y
+    private int y = 250; // Posición fija en Y
     private int velocidad = 5; // Velocidad de movimiento de la letra
     private boolean seMueveDerecha = true; // Indica si la letra se mueve a la derecha
     private boolean hiloActivo = false; // Indica si el hilo está corriendo
@@ -19,15 +19,15 @@ public class MoverLetraHilo implements Runnable {
             moverLetra(); // Mueve la letra
             ventana.repaint(); // Redibuja la ventana
             try {
-                Thread.sleep(20); // Intervalo de actualización (20ms)
+                Thread.sleep(100); // Intervalo de actualización (20ms)
             } catch (InterruptedException e) {
                 e.printStackTrace(); // Maneja la excepción si el hilo es interrumpido
             }
         }
     }
 
+    // Mueve la letra y cambia de dirección si rebota
     private void moverLetra() {
-        // Mueve la letra y cambia de dirección si rebota
         if (seMueveDerecha) { // Si se mueve a la derecha
             x += velocidad; // Aumenta la posición X
             if (x > ventana.getSize().width - 50) { // Si llega al borde derecho
@@ -41,25 +41,28 @@ public class MoverLetraHilo implements Runnable {
         }
     }
 
+    // Inicia el hilo de movimiento
     public void iniciar() {
-        // Inicia el hilo de movimiento
         hiloActivo = true;
-        new Thread(this).start(); // Inicia el hilo
+        this.start(); // Inicia el hilo
     }
 
+    // Detiene el hilo de movimiento
     public void detener() {
-        // Detiene el hilo de movimiento
         hiloActivo = false;
     }
 
+    // Si el hilo está activo
     public boolean isHiloActivo() {
         return hiloActivo;
     }
 
+    // Obtener el valor de X
     public int getX() {
         return x;
     }
 
+    // Obtener el vallor de Y
     public int getY() {
         return y;
     }

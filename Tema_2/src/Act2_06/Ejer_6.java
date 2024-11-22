@@ -9,9 +9,9 @@ public class Ejer_6 extends JFrame implements ActionListener {
 
     Ejer_6_HiloContador hilo1, hilo2, hilo3;
     private JButton comenzarCarrera;
-    private JLabel h1, h2, h3, prioridad1, prioridad2, prioridad3, ganador;
+    private JLabel h1, h2, h3, prioridad1, prioridad2, prioridad3, ganador, porcentaje1, porcentaj2, porcentaje3;
     private JProgressBar progress1, progress2, progress3;
-    JSlider slider1, slider2, slider3;
+    private JSlider slider1, slider2, slider3;
 
     public Ejer_6() {
         setTitle("USANDO PRIORIDADES. CARRERA DE HILOS");
@@ -33,9 +33,8 @@ public class Ejer_6 extends JFrame implements ActionListener {
 
         slider1 = new JSlider(JSlider.HORIZONTAL, 0, 10, 5);
         slider1.setBounds(150, 105, 200, 45);
-        // Configuración de las marcas del slider
         slider1.setMajorTickSpacing(5); // Espaciado entre marcas principales
-        slider1.setMinorTickSpacing(1); // ESpacios entre las marcas secundarias
+        slider1.setMinorTickSpacing(1); // Espacios entre las marcas secundarias
         slider1.setPaintTicks(true); // Habilita el dibujo de las marcas
         slider1.setPaintLabels(true); // Habilita el dibujo de las etiquetas
         add(slider1);
@@ -58,9 +57,8 @@ public class Ejer_6 extends JFrame implements ActionListener {
 
         slider2 = new JSlider(JSlider.HORIZONTAL, 0, 10, 5);
         slider2.setBounds(150, 205, 200, 45);
-        // Configuración de las marcas del slider
         slider2.setMajorTickSpacing(5); // Espaciado entre marcas principales
-        slider2.setMinorTickSpacing(1); // ESpacios entre las marcas secundarias
+        slider2.setMinorTickSpacing(1); // Espacios entre las marcas secundarias
         slider2.setPaintTicks(true); // Habilita el dibujo de las marcas
         slider2.setPaintLabels(true); // Habilita el dibujo de las etiquetas
         add(slider2);
@@ -83,9 +81,8 @@ public class Ejer_6 extends JFrame implements ActionListener {
 
         slider3 = new JSlider(JSlider.HORIZONTAL, 0, 10, 5);
         slider3.setBounds(150, 305, 200, 45);
-        // Configuración de las marcas del slider
         slider3.setMajorTickSpacing(5); // Espaciado entre marcas principales
-        slider3.setMinorTickSpacing(1); // ESpacios entre las marcas secundarias
+        slider3.setMinorTickSpacing(1); // Espacios entre las marcas secundarias
         slider3.setPaintTicks(true); // Habilita el dibujo de las marcas
         slider3.setPaintLabels(true); // Habilita el dibujo de las etiquetas
         add(slider3);
@@ -100,12 +97,27 @@ public class Ejer_6 extends JFrame implements ActionListener {
         progress3.setStringPainted(true);
         add(progress3);
 
+        // Porcentajes
+        porcentaje1 = new JLabel("");
+        porcentaje1.setFont(new Font("Arial", Font.PLAIN, 15));
+        porcentaje1.setBounds(150, 385, 50, 30);
+        add(porcentaje1);
+
+        porcentaj2 = new JLabel("");
+        porcentaj2.setFont(new Font("Arial", Font.PLAIN, 15));
+        porcentaj2.setBounds(225, 385, 50, 30);
+        add(porcentaj2);
+
+        porcentaje3 = new JLabel("");
+        porcentaje3.setFont(new Font("Arial", Font.PLAIN, 15));
+        porcentaje3.setBounds(300, 385, 50, 30);
+        add(porcentaje3);
+
         // GANADOR
         ganador = new JLabel("", JLabel.CENTER);
         ganador.setFont(new Font("Arial", Font.BOLD, 25));
         ganador.setBounds(100, 420, 300, 30);
         add(ganador);
-
     }
 
     @Override
@@ -114,6 +126,10 @@ public class Ejer_6 extends JFrame implements ActionListener {
             hilo1 = new Ejer_6_HiloContador(this);
             hilo2 = new Ejer_6_HiloContador(this);
             hilo3 = new Ejer_6_HiloContador(this);
+
+            prioridad1.setText("Prioridad " + slider1.getValue());
+            prioridad2.setText("Prioridad " + slider2.getValue());
+            prioridad3.setText("Prioridad " + slider3.getValue());
 
             // Asignamos las prioridades según los valores de los sliders
             asignarPrioridades();
@@ -146,49 +162,59 @@ public class Ejer_6 extends JFrame implements ActionListener {
                 hilo1.setPriority(Thread.MIN_PRIORITY);
                 hilo3.setPriority(Thread.NORM_PRIORITY);
             }
-        } else if (slider3.getValue() > slider1.getValue() && slider3.getValue() > slider2.getValue()) {
+        } else {
             hilo3.setPriority(Thread.MAX_PRIORITY);
             // Asignar prioridades normales y mínimas a los otros dos hilos
-            if (slider1.getValue() > slider2.getValue()) {
+            if (slider1.getValue() >= slider2.getValue()) {
                 hilo1.setPriority(Thread.NORM_PRIORITY);
                 hilo2.setPriority(Thread.MIN_PRIORITY);
             } else {
                 hilo1.setPriority(Thread.MIN_PRIORITY);
                 hilo2.setPriority(Thread.NORM_PRIORITY);
             }
-        } else {
-            hilo1.setPriority(Thread.NORM_PRIORITY);
-            hilo2.setPriority(Thread.NORM_PRIORITY);
-            hilo3.setPriority(Thread.NORM_PRIORITY);
         }
     }
 
-    // Actualiza las barras de progreso según el contador de cada hilo
+    // Método para actualizar los valores de las barras de progreso
     public void actualizarProgressBar(Ejer_6_HiloContador hilo) {
         if (hilo == hilo1) {
             progress1.setValue(hilo.getContador());
         } else if (hilo == hilo2) {
             progress2.setValue(hilo.getContador());
-        } else if (hilo == hilo3) {
+        } else {
             progress3.setValue(hilo.getContador());
         }
     }
 
-    // Muestra el ganador
-    public void mostrarGanador(Ejer_6_HiloContador hilo) {
-        if (hilo == hilo1) {
-            ganador.setText("¡Hilo 1 GANÓ!");
-        } else if (hilo == hilo2) {
-            ganador.setText("¡Hilo 2 GANÓ!");
-        } else if (hilo == hilo3) {
-            ganador.setText("¡Hilo 3 GANÓ!");
+    // Mostrar el ganador y detener los otros hilos
+    public void mostrarGanador(Ejer_6_HiloContador hiloGanador) {
+        if (hiloGanador == hilo1) {
+            ganador.setText("¡Hilo 1 Gana!");
+        } else if (hiloGanador == hilo2) {
+            ganador.setText("¡Hilo 2 Gana!");
+        } else {
+            ganador.setText("¡Hilo 3 Gana!");
         }
     }
 
+    // Detener los otros hilos
+    public void detenerOtrosHilos(Ejer_6_HiloContador hiloGanador) {
+        if (hiloGanador != hilo1) {
+            hilo1.detener();
+        }
+        if (hiloGanador != hilo2) {
+            hilo2.detener();
+        }
+        if (hiloGanador != hilo3) {
+            hilo3.detener();
+        }
+        porcentaje1.setText(progress1.getValue() + "");
+        porcentaj2.setText(progress2.getValue() + "");
+        porcentaje3.setText(progress3.getValue() + "");
+    }
 
     public static void main(String[] args) {
         Ejer_6 app = new Ejer_6();
         app.setVisible(true);
     }
-
 }
