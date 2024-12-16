@@ -1,8 +1,10 @@
-package Act3_07;
+package Act3_08.Act3_07_UDP;
 
-import java.io.*;
-import java.net.*;
-import java.util.InputMismatchException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ConnectException;
+import java.net.Socket;
 import java.util.Scanner;
 
 public class Cliente {
