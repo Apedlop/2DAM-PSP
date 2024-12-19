@@ -1,17 +1,17 @@
 package Act3_09;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
-import java.net.Socket;
-
-class Cliente extends JFrame {
+import java.net.*;
+public class Cliente extends JFrame {
     private JTextField textoInput;
     private JTextArea textoOutput;
     private Socket socket;
     private DataOutputStream salida;
-    private BufferedReader entrada;
+    private DataInputStream entrada;
 
-    int puerto = 6000;
+    int puerto = 44444;
     String host = "localhost";
 
     public Cliente() {
@@ -49,7 +49,7 @@ class Cliente extends JFrame {
         try {
             socket = new Socket(host, puerto);
             salida = new DataOutputStream(socket.getOutputStream());
-            entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            entrada = new DataInputStream(socket.getInputStream());
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error al conectar con el servidor: " + e.getMessage());
             System.exit(1);
@@ -60,11 +60,8 @@ class Cliente extends JFrame {
             if (!texto.isEmpty()) {
                 try {
                     salida.writeUTF(texto); // Envía el texto al servidor
-                    salida.flush();
-                    String respuesta = entrada.readLine(); // Lee la respuesta
-                    if (respuesta != null) {
-                        textoOutput.append("Servidor: " + respuesta + "\n");
-                    }
+                    String respuesta = entrada.readUTF(); // Lee la respuesta
+                    textoOutput.append("Servidor: " + respuesta + "\n");
                 } catch (IOException ex) {
                     textoOutput.append("Error al enviar el mensaje.\n");
                 }
@@ -87,7 +84,6 @@ class Cliente extends JFrame {
         });
     }
 
-    // Método principal para iniciar la aplicación
     public static void main(String[] args) {
         Cliente app = new Cliente(); // Crea una instancia de la ventana
         app.setVisible(true); // Hace visible la ventana

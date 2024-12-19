@@ -14,26 +14,30 @@ class HiloCliente extends Thread {
     public void run() {
         try (
                 DataInputStream entrada = new DataInputStream(socket.getInputStream());
-                PrintWriter salida = new PrintWriter(socket.getOutputStream(), true);
+                DataOutputStream salida = new DataOutputStream(socket.getOutputStream());
         ) {
             String mensaje;
 
             while (true) {
                 mensaje = entrada.readUTF(); // Recibe la cadena
-                System.out.println("Mensaje recibido: " + mensaje);
 
                 if (mensaje.equals("*")) {
-                    System.out.println("Cliente desconectado.");
+                    System.out.println(">> Desconecta IP " + socket.getInetAddress() + ", Puerto remoto: " + socket.getPort());
                     break;
                 }
 
                 // Envía el texto en mayúsculas
                 String respuesta = mensaje.toUpperCase();
-                salida.println(respuesta);
-                System.out.println("Respuesta enviada: " + respuesta);
+                salida.writeUTF(respuesta);
             }
         } catch (IOException e) {
             System.out.println("Error en la comunicación: " + e.getMessage());
+        } finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                System.out.println("Error al cerrar el socket: " + e.getMessage());
+            }
         }
     }
 }

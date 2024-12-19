@@ -6,89 +6,130 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class ClienteChat extends JFrame {
-    private JTextField entradaTexto; // Campo de texto para enviar mensajes
-    private JTextArea chatArea; // Área para mostrar mensajes
-    private PrintWriter salida; // Para enviar mensajes al servidor
-    private BufferedReader entrada; // Para recibir mensajes del servidor
-    private Socket socket;
+public class ClienteChat extends JFrame implements ActionListener, Runnable {
+    private static final long serialVersionUID = 1L;
+    Socket socket = null;
 
-    public ClienteChat() {
-        // Configuración de la ventana principal
-        setTitle("Cliente Chat");
-        setSize(500, 500);
-        setLayout(new BorderLayout());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Centrar ventana
+    // streams
+    DataInputStream fentrada;
+    DataOutputStream fsalida;
 
-        // Área de chat (solo lectura)
-        chatArea = new JTextArea();
-        chatArea.setEditable(false);
-        chatArea.setFont(new Font("Arial", Font.PLAIN, 14));
-        add(new JScrollPane(chatArea), BorderLayout.CENTER);
+    String nombre;
+    static JTextField mensaje = new JTextField();
 
-        // Campo de entrada de texto
-        entradaTexto = new JTextField();
-        entradaTexto.setFont(new Font("Arial", Font.PLAIN, 14));
-        add(entradaTexto, BorderLayout.SOUTH);
+    private JScrollPane scrollPane1;
+    static JTextArea textArea1;
+    JButton botonEnviar = new JButton("Enviar");
+    JButton botonSalir = new JButton("Salir");
+    boolean repetir = true;
 
-        // Conectar con el servidor
-        conectarAlServidor();
+    // Constructor
+    public ClienteChat(Socket s, String nombre) {
+        super("Conexión del cliente chat: " + nombre);
+        setLayout(null);
+        mensaje.setBounds(10, 10, 400, 30);
+        add(mensaje);
 
-        // Acción para enviar mensajes
-        entradaTexto.addActionListener(e -> {
-            String mensaje = entradaTexto.getText().trim();
-            if (!mensaje.isEmpty()) {
-                salida.println(mensaje); // Envía el mensaje al servidor
-                entradaTexto.setText(""); // Limpia el campo de entrada
-            }
-        });
-    }
+        textArea1 = new JTextArea();
+        scrollPane1 = new JScrollPane(textArea1);
+        scrollPane1.setBounds(10, 50, 400, 300);
+        add(scrollPane1);
 
-    private void conectarAlServidor() {
+        botonEnviar.setBounds(420, 10, 100, 30);
+        add(botonEnviar);
+        botonSalir.setBounds(420, 50, 100, 30);
+        add(botonSalir);
+
+        textArea1.setEditable(false);
+        botonSalir.addActionListener(this);
+        botonEnviar.addActionListener(this);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+        socket = s;
+        this.nombre = nombre;
+
         try {
-            socket = new Socket("localhost", 6000); // Conectar al servidor en el puerto 6000
-            salida = new PrintWriter(socket.getOutputStream(), true);
-            entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-            // Hilo para recibir mensajes del servidor
-            new Thread(() -> {
-                try {
-                    String mensaje;
-                    while ((mensaje = entrada.readLine()) != null) {
-                        chatArea.append(mensaje + "\n");
-                    }
-                } catch (IOException e) {
-                    mostrarError("Conexión cerrada por el servidor.");
-                } finally {
-                    cerrarRecursos();
-                }
-            }).start();
-
+            fentrada = new DataInputStream(socket.getInputStream());
+            fsalida = new DataOutputStream(socket.getOutputStream());
+            String texto = " > Entrada en el Chat ... " + nombre;
+            fsalida.writeUTF(texto);
         } catch (IOException e) {
-            mostrarError("No se pudo conectar al servidor. Verifica que el servidor esté activo.");
-            System.exit(1);
+            System.out.println("ERROR DE E/S");
+            e.printStackTrace();
+            System.exit(0);
         }
     }
 
-    private void mostrarError(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == botonEnviar) {
+            if (mensaje.getText().trim().length() == 0) return;
+            String texto = nombre + " > " + mensaje.getText();
+
+            try {
+                mensaje.setText("");
+                fsalida.writeUTF(texto);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        if (e.getSource() == botonSalir) {
+            String texto = " > Abandona el Chat ... " + nombre;
+
+            try {
+                fsalida.writeUTF(texto);
+                fsalida.writeUTF("*");
+                repetir = false;
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 
-    private void cerrarRecursos() {
+    @Override
+    public void run() {
+        String texto = "";
+        while (repetir) {
+            try {
+                texto = fentrada.readUTF();
+                textArea1.setText(texto);
+            } catch (IOException e1) {
+                // Este error sale cuando el servidor se cierra
+                JOptionPane.showMessageDialog(null, "IMPOSIBLE CONECTAR CON EL SERVIDOR\n" + e1.getMessage(), "<<MENSAJE DE ERROR: 2>>", JOptionPane.ERROR_MESSAGE);
+                repetir = false; // Salir del bucle
+
+            }
+        }
         try {
-            if (salida != null) salida.close();
-            if (entrada != null) entrada.close();
-            if (socket != null) socket.close();
+            socket.close(); // Cerrar el socket
+            System.exit(0);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            ClienteChat cliente = new ClienteChat();
+        int puerto = 44444;
+        String host = "localhost";
+        Socket s = null;
+
+        String nombre = JOptionPane.showInputDialog(null, "Introduce tu nombre o nick: ");
+
+        if (nombre.trim().length() == 0) {
+            System.out.println("El nombre está vacío...");
+            return;
+        }
+
+        try {
+            s = new Socket("172.17.0.1", puerto);
+            ClienteChat cliente = new ClienteChat(s, nombre);
+            cliente.setBounds(0, 0, 540, 400);
             cliente.setVisible(true);
-        });
+            new Thread(cliente).start(); // Se lanza el hilo Cliente
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "IMPOSIBLE CONECTAR CON EL SERVIDOR\n" + e.getMessage(), "<<MENSAJE DE ERROR: 1>>", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
 }

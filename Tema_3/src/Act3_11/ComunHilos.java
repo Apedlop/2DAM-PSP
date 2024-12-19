@@ -1,27 +1,71 @@
 package Act3_11;
 
-import java.io.PrintWriter;
-import java.util.HashSet;
-import java.util.Set;
+import java.net.Socket;
 
 public class ComunHilos {
-    // Lista sincronizada para almacenar los flujos de salida de los clientes
-    private static Set<PrintWriter> clientes = new HashSet<>();
 
-    // Método para agregar un cliente a la lista
-    public static synchronized void agregarCliente(PrintWriter cliente) {
-        clientes.add(cliente);
+    int CONEXIONES;
+    int ACTUALES;
+    int MAXIMO;
+    Socket[] tabla;
+    String mensajes;
+
+    public ComunHilos(int max, int actuales, int conexiones, Socket[] tabla) {
+        MAXIMO = max;
+        ACTUALES = actuales;
+        CONEXIONES = conexiones;
+        this.tabla = new Socket[MAXIMO];  // Inicialización del arreglo de sockets
+        mensajes = "";
     }
 
-    // Método para eliminar un cliente de la lista
-    public static synchronized void eliminarCliente(PrintWriter cliente) {
-        clientes.remove(cliente);
+    public ComunHilos() {
+        // Constructor vacío, puedes añadir cualquier lógica si es necesario
     }
 
-    // Método para enviar un mensaje a todos los clientes
-    public static synchronized void enviarATodos(String mensaje) {
-        for (PrintWriter cliente : clientes) {
-            cliente.println(mensaje);
+    public int getMax() {
+        return MAXIMO;
+    }
+
+    public void setMax(int max) {
+        MAXIMO = max;
+    }
+
+    public int getConexiones() {
+        return CONEXIONES;
+    }
+
+    public synchronized void setConexiones(int conexiones) {
+        this.CONEXIONES = conexiones;
+    }
+
+    public int getActuales() {
+        return ACTUALES;
+    }
+
+    public synchronized void setActuales(int actuales) {
+        this.ACTUALES = actuales;
+    }
+
+    public synchronized Socket getElementoTabla(int i) {
+        if (i >= 0 && i < MAXIMO) {
+            return tabla[i];
         }
+        return null;
+    }
+
+    public synchronized void addTabla(Socket s, int i) {
+        if (i < MAXIMO) {  // Aseguramos que no se exceda el límite de conexiones
+            tabla[i] = s;
+        } else {
+            System.out.println("No se pueden aceptar más conexiones.");
+        }
+    }
+
+    public String getMensajes() {
+        return mensajes;
+    }
+
+    public synchronized void setMensajes(String mensajes) {
+        this.mensajes = mensajes;
     }
 }
