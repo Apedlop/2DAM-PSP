@@ -30,6 +30,8 @@ class HiloCliente extends Thread {
                 String respuesta = mensaje.toUpperCase();
                 salida.writeUTF(respuesta);
             }
+        } catch (EOFException e) {
+            System.out.println("\t>> Cliente desconectado inesperadamente.");
         } catch (IOException e) {
             System.out.println("Error en la comunicación: " + e.getMessage());
         } finally {
