@@ -10,5 +10,7 @@
     <orderEntry type="library" name="mysql-connector-java-8.0.12" level="application" />
     <orderEntry type="library" name="commons-net-3.11.1" level="application" />
     <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
+    <orderEntry type="library" name="commons-net-3" level="project" />
+    <orderEntry type="library" name="commons-net-3.2" level="project" />
   </component>
 </module>
