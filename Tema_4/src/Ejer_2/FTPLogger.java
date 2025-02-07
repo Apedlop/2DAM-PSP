@@ -1,328 +1,173 @@
 package Ejer_2;
 
+import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.smtp.AuthenticatingSMTPClient;
-import org.apache.commons.net.smtp.SMTPReply;
 import org.apache.commons.net.smtp.SimpleSMTPHeader;
 
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.swing.*;
-import java.awt.*;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
 import java.security.spec.InvalidKeySpecException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Scanner;
 
 public class FTPLogger {
+
     public static void main(String[] args) {
-        // Crear el frame de la ventana
-        JFrame frame = new JFrame("Cliente SMTP");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 600);
-        frame.setLocationRelativeTo(null); // Centrar la ventana
+        Scanner scanner = new Scanner(System.in);
+        int successfulConnections = 0;
 
-        // Panel principal con layout flexible
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10); // Espaciado entre componentes
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        while (true) {
+            // Solicitar nombre de usuario para el login
+            System.out.print("Introduce el nombre de usuario (o * para salir): ");
+            String username = scanner.nextLine();
 
-        // Títulos y etiquetas
-        JLabel titleLabel = new JLabel("Configuración del Cliente SMTP");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        gbc.gridwidth = 2;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        panel.add(titleLabel, gbc);
+            // Si el usuario ingresa '*' se termina el programa
+            if (username.equals("*")) {
+                break;
+            }
 
-        // Campos de entrada para los datos
-        gbc.gridwidth = 1;
+            // Solicitar contraseña para el login
+            System.out.print("Introduce la contraseña: ");
+            String password = scanner.nextLine();
 
-        // Servidor SMTP
-        gbc.gridy = 1;
-        JTextField serverField = new JTextField("smtp.gmail.com");
-        serverField.setText("Servidor SMTP");
-        serverField.setForeground(Color.GRAY);
-        serverField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                if (serverField.getText().equals("Servidor SMTP")) {
-                    serverField.setText("");
-                    serverField.setForeground(Color.BLACK);
-                }
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                if (serverField.getText().isEmpty()) {
-                    serverField.setText("Servidor SMTP");
-                    serverField.setForeground(Color.GRAY);
-                }
-            }
-        });
-        gbc.gridx = 1;
-        panel.add(serverField, gbc);
-
-        // Usuario (Correo)
-        gbc.gridy = 2;
-        JTextField usernameField = new JTextField("pablorodseg@gmail.com");
-        usernameField.setText("Usuario (Correo)");
-        usernameField.setForeground(Color.GRAY);
-        usernameField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                if (usernameField.getText().equals("Usuario (Correo)")) {
-                    usernameField.setText("");
-                    usernameField.setForeground(Color.BLACK);
-                }
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                if (usernameField.getText().isEmpty()) {
-                    usernameField.setText("Usuario (Correo)");
-                    usernameField.setForeground(Color.GRAY);
-                }
-            }
-        });
-        gbc.gridx = 1;
-        panel.add(usernameField, gbc);
-
-        // Contraseña
-        gbc.gridy = 3;
-        JPasswordField passwordField = new JPasswordField();
-        passwordField.setText("Contraseña");
-        passwordField.setForeground(Color.GRAY);
-        passwordField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                if (new String(passwordField.getPassword()).equals("Contraseña")) {
-                    passwordField.setText("");
-                    passwordField.setForeground(Color.BLACK);
-                }
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                if (new String(passwordField.getPassword()).isEmpty()) {
-                    passwordField.setText("Contraseña");
-                    passwordField.setForeground(Color.GRAY);
-                }
-            }
-        });
-        gbc.gridx = 1;
-        panel.add(passwordField, gbc);
-
-        // Puerto
-        gbc.gridy = 4;
-        JTextField puertoField = new JTextField("587");
-        puertoField.setText("Puerto");
-        puertoField.setForeground(Color.GRAY);
-        puertoField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                if (puertoField.getText().equals("Puerto")) {
-                    puertoField.setText("");
-                    puertoField.setForeground(Color.BLACK);
-                }
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                if (puertoField.getText().isEmpty()) {
-                    puertoField.setText("Puerto");
-                    puertoField.setForeground(Color.GRAY);
-                }
-            }
-        });
-        gbc.gridx = 1;
-        panel.add(puertoField, gbc);
-
-        // Remitente (Correo)
-        gbc.gridy = 5;
-        JTextField remitenteField = new JTextField("pablorodseg@gmail.com");
-        remitenteField.setText("Remitente (Correo)");
-        remitenteField.setForeground(Color.GRAY);
-        remitenteField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                if (remitenteField.getText().equals("Remitente (Correo)")) {
-                    remitenteField.setText("");
-                    remitenteField.setForeground(Color.BLACK);
-                }
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                if (remitenteField.getText().isEmpty()) {
-                    remitenteField.setText("Remitente (Correo)");
-                    remitenteField.setForeground(Color.GRAY);
-                }
-            }
-        });
-        gbc.gridx = 1;
-        panel.add(remitenteField, gbc);
-
-        // Destinatario (Correo)
-        gbc.gridy = 6;
-        JTextField destinoField = new JTextField();
-        destinoField.setText("Destinatario (Correo)");
-        destinoField.setForeground(Color.GRAY);
-        destinoField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                if (destinoField.getText().equals("Destinatario (Correo)")) {
-                    destinoField.setText("");
-                    destinoField.setForeground(Color.BLACK);
-                }
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                if (destinoField.getText().isEmpty()) {
-                    destinoField.setText("Destinatario (Correo)");
-                    destinoField.setForeground(Color.GRAY);
-                }
-            }
-        });
-        gbc.gridx = 1;
-        panel.add(destinoField, gbc);
-
-        // Asunto
-        gbc.gridy = 7;
-        JTextField asuntoField = new JTextField();
-        asuntoField.setText("Asunto");
-        asuntoField.setForeground(Color.GRAY);
-        asuntoField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                if (asuntoField.getText().equals("Asunto")) {
-                    asuntoField.setText("");
-                    asuntoField.setForeground(Color.BLACK);
-                }
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                if (asuntoField.getText().isEmpty()) {
-                    asuntoField.setText("Asunto");
-                    asuntoField.setForeground(Color.GRAY);
-                }
-            }
-        });
-        gbc.gridx = 1;
-        panel.add(asuntoField, gbc);
-
-        // Mensaje
-        gbc.gridy = 8;
-        JTextArea mensajeArea = new JTextArea(5, 20);
-        mensajeArea.setText("Mensaje");
-        mensajeArea.setForeground(Color.GRAY);
-        mensajeArea.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                if (mensajeArea.getText().equals("Mensaje")) {
-                    mensajeArea.setText("");
-                    mensajeArea.setForeground(Color.BLACK);
-                }
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                if (mensajeArea.getText().isEmpty()) {
-                    mensajeArea.setText("Mensaje");
-                    mensajeArea.setForeground(Color.GRAY);
-                }
-            }
-        });
-        JScrollPane scrollPane = new JScrollPane(mensajeArea);
-        gbc.gridx = 1;
-        panel.add(scrollPane, gbc);
-
-        // Área de resultados
-        gbc.gridy = 9;
-        JTextArea resultArea = new JTextArea(5, 20);
-        resultArea.setEditable(false);
-        JScrollPane resultScrollPane = new JScrollPane(resultArea);
-        gbc.gridx = 1;
-        panel.add(resultScrollPane, gbc);
-
-        // Botón de envío
-        JButton sendButton = new JButton("Enviar");
-        gbc.gridwidth = 2;
-        gbc.gridx = 0;
-        gbc.gridy = 10;
-        panel.add(sendButton, gbc);
-
-        // Agregar panel al frame
-        frame.add(panel);
-        frame.setVisible(true);
-
-        // Acción del botón de envío
-        sendButton.addActionListener(e -> {
-            String server = serverField.getText();
-            String username = usernameField.getText();
-            String password = new String(passwordField.getPassword());
-            int puerto = Integer.parseInt(puertoField.getText());
-            String remitente = remitenteField.getText();
-            String destino = destinoField.getText();
-            String asunto = asuntoField.getText();
-            String mensaje = mensajeArea.getText();
-
+            FTPClient ftpClient = new FTPClient();
             try {
-                // Crear cliente SMTP seguro
-                AuthenticatingSMTPClient client = new AuthenticatingSMTPClient();
+                // Conectar al servidor FTP
+                ftpClient.connect("localhost");
+                // Intentar hacer login con el nombre de usuario y contraseña proporcionados
+                boolean login = ftpClient.login(username, password);
 
-                // Conectar al servidor SMTP
-                client.connect(server, puerto);
-                resultArea.append("Conexión realizada al servidor SMTP: " + server + "\n");
+                if (login) {
+                    // Si el login es exitoso, se incrementa el contador de conexiones exitosas
+                    System.out.println("Login correcto...");
+                    successfulConnections++;
 
-                // Establecer clave para comunicación segura
-                KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-                kmf.init(null, null);
-                KeyManager km = kmf.getKeyManagers()[0];
-                client.setKeyManager(km);
-
-                int respuesta = client.getReplyCode();
-                if (!SMTPReply.isPositiveCompletion(respuesta)) {
-                    client.disconnect();
-                    resultArea.append("Error de conexión\n");
-                    return;
-                }
-
-                // Enviar comando EHLO
-                client.ehlo(server);
-                resultArea.append("Respuesta del servidor: " + client.getReplyString() + "\n");
-
-                // Negociar TLS
-                if (client.execTLS()) {
-                    resultArea.append("TLS iniciado correctamente\n");
-
-                    // Autenticación
-                    if (client.auth(AuthenticatingSMTPClient.AUTH_METHOD.PLAIN, username, password)) {
-                        resultArea.append("Autenticación exitosa\n");
-
-                        // Crear cabecera y enviar mensaje
-                        SimpleSMTPHeader cabecera = new SimpleSMTPHeader(remitente, destino, "Asunto: " + asunto);
-                        client.setSender(remitente);
-                        client.addRecipient(destino);
-
-                        Writer writer = client.sendMessageData();
-                        if (writer != null) {
-                            writer.write(cabecera.toString());
-                            writer.write(mensaje);
-                            writer.close();
-                            resultArea.append("Mensaje enviado con éxito.\n");
-
-                            boolean exito = client.completePendingCommand();
-                            if (!exito) {
-                                resultArea.append("Error al finalizar la transacción.\n");
-                            }
-                        } else {
-                            resultArea.append("Error al enviar los datos.\n");
-                        }
-                    } else {
-                        resultArea.append("Error de autenticación\n");
+                    // Establecer el directorio de logs del usuario
+                    String logDirectory = "/" + username + "/LOG";
+                    // Cambiar al directorio LOG
+                    if (!ftpClient.changeWorkingDirectory(logDirectory)) {
+                        System.out.println("Error: No se pudo acceder al directorio LOG.");
+                        continue;
                     }
+
+                    // Nombre del archivo de log
+                    String logFile = "LOG.TXT";
+                    InputStream inputStream = ftpClient.retrieveFileStream(logFile);
+                    StringBuilder logContent = new StringBuilder();
+                    if (inputStream != null) {
+                        // Leer el contenido del archivo de log si existe
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            logContent.append(line).append("\n");
+                        }
+                        reader.close();
+                        inputStream.close();
+                    } else {
+                        // Si no existe, se genera un log básico
+                        logContent.append("Conexiones del usuario.\n");
+                    }
+
+                    // Obtener la fecha y hora actual
+                    String timestamp = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy").format(new Date());
+                    // Añadir la hora de conexión al log
+                    logContent.append("Hora de conexión: ").append(timestamp).append("\n");
+
+                    // Convertir el contenido del log a un flujo de bytes y almacenarlo de nuevo en el archivo
+                    ByteArrayInputStream newLogContent = new ByteArrayInputStream(logContent.toString().getBytes());
+                    ftpClient.storeFile(logFile, newLogContent);
+                    newLogContent.close();
+
+                    // Cerrar sesión del FTP
+                    ftpClient.logout();
                 } else {
-                    resultArea.append("Error al negociar TLS\n");
+                    // Si el login falla
+                    System.out.println("Login Incorrecto...");
+                }
+            } catch (IOException ex) {
+                // Manejo de errores si ocurre algún problema con la conexión FTP
+                ex.printStackTrace();
+            } finally {
+                try {
+                    // Desconectar el cliente FTP, si fue conectado
+                    ftpClient.disconnect();
+                } catch (IOException ex) {
+                    // Manejo de errores si ocurre algún problema al desconectar
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        // Después de procesar todas las conexiones, enviar un correo con el conteo de conexiones exitosas
+        sendEmail(successfulConnections);
+    }
+
+    private static void sendEmail(int successfulConnections) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Solicitar detalles para enviar un correo SMTP
+        System.out.print("Introduce servidor SMTP: ");
+        String server = scanner.nextLine();
+
+        System.out.print("Introduce usuario: ");
+        String userName = scanner.nextLine();
+
+        System.out.print("Introduce password: ");
+        String password = scanner.nextLine();
+
+        System.out.print("Introduce puerto: ");
+        int puerto = Integer.parseInt(scanner.nextLine());
+
+        System.out.print("Introduce correo del remitente: ");
+        String remitente = scanner.nextLine();
+
+        System.out.print("Introduce correo destinatario: ");
+        String destinatario = scanner.nextLine();
+
+        // Definir el asunto y el mensaje del correo
+        String asunto = "Conexiones FTP exitosas";
+        String mensaje = "Número de conexiones exitosas: " + successfulConnections;
+
+        AuthenticatingSMTPClient cliente = new AuthenticatingSMTPClient();
+
+        try {
+            // Conectar al servidor SMTP
+            cliente.connect(server, puerto);
+            cliente.ehlo(server);
+
+            // Intentar autenticar al cliente SMTP
+            if (cliente.auth(AuthenticatingSMTPClient.AUTH_METHOD.PLAIN, userName, password)) {
+                // Crear la cabecera del correo
+                SimpleSMTPHeader cabecera = new SimpleSMTPHeader(remitente, destinatario, asunto);
+                cliente.setSender(remitente);
+                cliente.addRecipient(destinatario);
+
+                // Enviar el mensaje
+                Writer writer = cliente.sendMessageData();
+                if (writer != null) {
+                    writer.write(cabecera.toString());
+                    writer.write(mensaje);
+                    writer.close();
                 }
 
-                // Desconectar
-                client.disconnect();
-
-            } catch (IOException | NoSuchAlgorithmException ex) {
-                resultArea.append("Error: " + ex.getMessage() + "\n");
-                ex.printStackTrace();
-            } catch (KeyStoreException ex) {
-                throw new RuntimeException(ex);
-            } catch (InvalidKeySpecException ex) {
-                throw new RuntimeException(ex);
-            } catch (UnrecoverableKeyException ex) {
-                throw new RuntimeException(ex);
-            } catch (InvalidKeyException ex) {
-                throw new RuntimeException(ex);
+                // Completar el envío del mensaje
+                cliente.completePendingCommand();
+                System.out.println("Correo enviado con éxito.");
+            } else {
+                System.out.println("Error: Usuario no identificado.");
             }
-        });
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                cliente.disconnect();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }
