@@ -1,6 +1,5 @@
 package Act2_08;
 
-import sun.java2d.pipe.TextRenderer;
 
 public class Ejer_11_Jugador extends Thread {
 

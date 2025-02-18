@@ -7,12 +7,9 @@ import java.util.Scanner;
 
 public class SHA_256 {
 
-    MessageDigest md;
-
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-
 
         try {
             System.out.println("Introduce una cadena de texto: ");
@@ -24,57 +21,55 @@ public class SHA_256 {
             System.out.println("Introduce la cadena de texto que actuará como clave: ");
             String clave = sc.next();
 
+            // Concatenamos las cadenas con la clave
             String cadena1 = texto1 + clave;
             String cadena2 = texto2 + clave;
 
+            // Inicializamos el algoritmo SHA-256
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+
             // TEXTO 1
-            byte[] dataBytes = texto1.getBytes(); // Texto a Bytes
-            md.update(dataBytes); // Se introduce texto en bytes a resumir
-            byte[] resumen = md.digest(); // Se calcula el resumen
+            byte[] dataBytes1 = cadena1.getBytes(); // Texto a Bytes
+            md.update(dataBytes1); // Se introduce texto en bytes a resumir
+            byte[] resumen1 = md.digest(); // Se calcula el resumen
 
             System.out.println("===========TEXTO 1==========");
             System.out.println("Mensaje original: " + texto1);
-            System.out.println("Mensaje resumen: " + new String(resumen));
-            System.out.println("Mensaje en Hexadecimal: " + Hexadecimal(resumen));
+            System.out.println("Mensaje resumen: " + new String(resumen1));
+            System.out.println("Mensaje en Hexadecimal: " + Hexadecimal(resumen1));
 
             // TEXTO 2
-            
+            md.reset(); // Reiniciamos el MessageDigest
+            byte[] dataBytes2 = cadena2.getBytes(); // Texto a Bytes
+            md.update(dataBytes2); // Se introduce texto en bytes a resumir
+            byte[] resumen2 = md.digest(); // Se calcula el resumen
 
-            System.out.println("===========TEXTO 1==========");
+            System.out.println("===========TEXTO 2==========");
             System.out.println("Mensaje original: " + texto2);
             System.out.println("Mensaje resumen: " + new String(resumen2));
             System.out.println("Mensaje en Hexadecimal: " + Hexadecimal(resumen2));
 
+            // Información del proveedor
             Provider proveedor = md.getProvider();
+            System.out.println("Proveedor: " + proveedor.getName());
+
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-        }
-
-    }
-
-    // Convierte la cadena de texto a byte
-    public void bytes(String texto) {
-        try {
-            md = MessageDigest.getInstance("SHA-256"); // Algoritmo que se va a usar
-            byte[] dataBytes2 = texto.getBytes(); // Texto a Bytes
-            md.update(dataBytes2); // Se introduce texto en bytes a resumir
-            byte[] resumen = md.digest(); // Se calcula el resumen
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+        } finally {
+            sc.close(); // Cerramos el Scanner
         }
     }
 
     // Convierte un array de bytes a hexadecimal
     static String Hexadecimal(byte[] resumen) {
-        String hex = "";
+        StringBuilder hex = new StringBuilder();
         for (int i = 0; i < resumen.length; i++) {
             String h = Integer.toHexString(resumen[i] & 0xFF);
             if (h.length() == 1) {
-                hex += "0";
+                hex.append("0");
             }
-            hex += h;
+            hex.append(h);
         }
-        return hex.toUpperCase();
+        return hex.toString().toUpperCase();
     }
-
 }
