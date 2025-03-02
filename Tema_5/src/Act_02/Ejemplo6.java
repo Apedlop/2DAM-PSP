@@ -7,8 +7,10 @@
 * Esto signfinica que .dat ha sido alterado y su contenido ya no coincide con el formato binario
 * esperado por ObjectInputStream. Este flujo espera leer un encabezado específico generado por
 * ObjectOutputStream, y al cambiar una letra (o cualquier byte), el encabezado se corrompe,
-* provocando el error invalid stream header. Esto ocurre porque el archivo ya no representa un
-* objeto serializado válido en Java.
+* provocando el error invalid stream header.
+*
+* A raíz de esto, he cambiado una palabra, una vez he cogido el texto del fichero bianrio. De esta manera las frases no
+* coinciden, por lo que la salida será "Datos no válidos".
 */
 
 package Act_02;
@@ -22,31 +24,40 @@ public class Ejemplo6 {
     public static void main(String[] args) {
 
         try {
+            // Leemos el archivo de datos.dat
             FileInputStream in = new FileInputStream("src/Act_02/datos.dat");
             ObjectInputStream ois = new ObjectInputStream(in);
+
+            // Primera lectura del archivo
             Object o = ois.readObject();
 
-            // Primera lectura, se obtiene el String
+            // Se obtiene la cadena de texto original del archivo
             String datos = (String) o;
-            System.out.println("Datos: " + datos);
+            System.out.println("Datos originales: " + datos);
 
-            // Segunda lectura
+            // Modificación de la frase para que no coincida con el hash original
+            // Por ejemplo, cambiamos la "M" de Mancha a "m"
+            datos = datos.replace("Mancha", "mancha");
+            System.out.println("Datos modificados: " + datos);
+
+            // Segunda lectura del archivo para obtener el resumen del hash original
             o = ois.readObject();
             byte[] resumenOriginal = (byte[]) o;
 
             MessageDigest md = MessageDigest.getInstance("SHA-256");
 
-            // Se calcula el resumen del String leído del fichero
-            md.update(datos.getBytes()); // Texto a resumir
+            // Se calcula el resumen del texto modificado
+            md.update(datos.getBytes()); // Texto modificado a resumir
             byte[] resumenActual = md.digest(); // Se calcula el resumen
 
-            // Se comprueban los dos resúmenes
+            // Comprobamos si los dos resúmenes son iguales
             if (MessageDigest.isEqual(resumenOriginal, resumenActual)) {
                 System.out.println("Datos válidos");
             } else {
                 System.out.println("Datos no válidos");
             }
 
+            // Cerramos los streams
             ois.close();
             in.close();
         } catch (Exception e) {
