@@ -5,30 +5,30 @@ import javax.security.auth.callback.*;
 
 public class MyCallbackHandler implements CallbackHandler {
     private String usuario;
-    private char[] clave;
+    private String clave;
 
-    public void handle(Callback[] callbacks) throws IOException {
+    // Constructor recibe parámetros usuario y clave
+    public MyCallbackHandler(String usuario, String clave) {
+        this.usuario = usuario;
+        this.clave = clave;
+    }
+
+    // Método handle será invocado por el LoginModule
+    @Override
+    public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
         for (int i = 0; i < callbacks.length; i++) {
-            if (callbacks[i] instanceof NameCallback) {
-                NameCallback nameCB = (NameCallback) callbacks[i];
+            Callback callback = callbacks[i];
 
-                // Muestra el prompt
-                System.out.print(nameCB.getPrompt());
+            if (callback instanceof NameCallback) {
+                NameCallback nameBC = (NameCallback) callback;
 
-                // Entrada estándar, solicitar el nombre del usuario
-                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-                usuario = br.readLine();  // Lectura por teclado
-                nameCB.setName(usuario);
-            } else if (callbacks[i] instanceof PasswordCallback) {
-                PasswordCallback passwordCB = (PasswordCallback) callbacks[i];
+                // Se asigna al NameCallback el nombre de usuario
+                nameBC.setName(usuario);
+            } else if (callback instanceof PasswordCallback) {
+                PasswordCallback passwordCB = (PasswordCallback) callback;
 
-                // Muestra el prompt
-                System.out.print(passwordCB.getPrompt());
-
-                // Entrada estándar, solicitar la clave del usuario
-                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-                clave = br.readLine().toCharArray();  // Lectura por teclado
-                passwordCB.setPassword(clave);
+                // Se asigna al PasswordCallback la clave
+                passwordCB.setPassword(clave.toCharArray());
             }
         }
     }
